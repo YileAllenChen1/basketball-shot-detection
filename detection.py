@@ -17,12 +17,12 @@ datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 frame_batch = 3
 
-cap = cv2.VideoCapture("sample/one_score_one_miss.mp4")
+cap = cv2.VideoCapture("sample/Giannis_Antetokounmpo_shooting.avi")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter("sample/output.avi", fourcc, fps / frame_batch, (int(width * 2 * 0.8), int(height * 0.8)))
+out = cv2.VideoWriter("sample/output_new.avi", fourcc, fps / frame_batch, (int(width * 0.8), int(height * 0.8)))
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
 
 fig = plt.figure()

@@ -101,13 +101,21 @@ def calculateAngle(a, b, c):
     return round(np.degrees(angle), 2)
 
 def getAngleFromDatum(datum):
-    hipX, hipY, _ = datum.poseKeypoints[0][9]
-    kneeX, kneeY, _ = datum.poseKeypoints[0][10]
-    ankleX, ankleY, _ = datum.poseKeypoints[0][11]
+    # hipX, hipY, _ = datum.poseKeypoints[0][9]
+    # kneeX, kneeY, _ = datum.poseKeypoints[0][10]
+    # ankleX, ankleY, _ = datum.poseKeypoints[0][11]
 
-    shoulderX, shoulderY, _ = datum.poseKeypoints[0][2]
-    elbowX, elbowY, _ = datum.poseKeypoints[0][3]
-    wristX, wristY, _ = datum.poseKeypoints[0][4]
+    hipX, hipY, _ = datum.poseKeypoints[0][12]
+    kneeX, kneeY, _ = datum.poseKeypoints[0][13]
+    ankleX, ankleY, _ = datum.poseKeypoints[0][14]
+
+    # shoulderX, shoulderY, _ = datum.poseKeypoints[0][2]
+    # elbowX, elbowY, _ = datum.poseKeypoints[0][3]
+    # wristX, wristY, _ = datum.poseKeypoints[0][4]
+
+    shoulderX, shoulderY, _ = datum.poseKeypoints[0][5]
+    elbowX, elbowY, _ = datum.poseKeypoints[0][6]
+    wristX, wristY, _ = datum.poseKeypoints[0][7]
 
     kneeAngle = calculateAngle(np.array([hipX, hipY]), np.array([kneeX, kneeY]), np.array([ankleX, ankleY]))
     elbowAngle = calculateAngle(np.array([shoulderX, shoulderY]), np.array([elbowX, elbowY]), np.array([wristX, wristY]))
@@ -281,5 +289,6 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
                 previous['hoop'][3] = ymin
                 previous['hoop_height'] = max(ymin, previous['hoop_height'])
 
-    combined = np.concatenate((frame, trace), axis=1)
+    # combined = np.concatenate((frame, trace), axis=1)
+    combined = frame
     return combined, trace
