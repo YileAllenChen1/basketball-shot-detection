@@ -13,13 +13,15 @@ tf.disable_v2_behavior()
 def openpose_init():
     try:
         if platform == "win32":
-            sys.path.append('./OpenPose/Release')
-            import pyopenpose as op
+            sys.path.append(os.path.dirname(os.getcwd()))
+            import OpenPose.Release.pyopenpose as op
         else:
-            sys.path.append('./OpenPose')
-            from Release import pyopenpose as op
+            path = os.path.join(os.getcwd(), '/usr/local/python')
+            print(path)
+            sys.path.append(path)
+            import pyopenpose as op
     except ImportError as e:
-        print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
+        print("Something went wrong when importing OpenPose")
         raise e
 
     # Custom Params (refer to include/openpose/flags.hpp for more parameters)
@@ -125,7 +127,8 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
 
     # getting openpose keypoints
     datum.cvInputData = frame
-    opWrapper.emplaceAndPop([datum])
+    import pyopenpose as op
+    opWrapper.emplaceAndPop(op.VectorDatum([datum]))
     try:
         headX, headY, headConf = datum.poseKeypoints[0][0]
         handX, handY, handConf = datum.poseKeypoints[0][4]

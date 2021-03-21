@@ -11,6 +11,7 @@ from scipy.optimize import curve_fit
 from utils import openpose_init, tensorflow_init, detect_shot
 from statistics import mean
 tf.disable_v2_behavior()
+from google.colab.patches import cv2_imshow # for image display
 
 datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
@@ -79,7 +80,7 @@ with tf.Session(graph=detection_graph, config=config) as sess:
                                         num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose)
 
         detection = cv2.resize(detection, (0, 0), fx=0.8, fy=0.8)
-        cv2.imshow("detection", detection)
+        cv2_imshow(detection)
         out.write(detection)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
