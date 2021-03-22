@@ -170,7 +170,7 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
         cv2.putText(frame, 'Release: ' + str(during_shooting['release_angle_list'][-1]) + ' deg',
                    (during_shooting['release_point'][0] - 80, during_shooting['release_point'][1] + 80), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 255), 3)
     
-
+    
     for i, box in enumerate(boxes[0]):
         if (scores[0][i] > 0.5):
             ymin = int((box[0] * height))

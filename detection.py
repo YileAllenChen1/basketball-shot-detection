@@ -85,6 +85,11 @@ with tf.Session(graph=detection_graph, config=config) as sess:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
+print('elbow_angle_list', shooting_pose['elbow_angle_list'])
+print('knee_angle_list', shooting_pose['knee_angle_list'])
+print('release_angle_list', during_shooting['release_angle_list'])
+
+
 # getting average shooting angle
 shooting_result['avg_elbow_angle'] = round(mean(shooting_pose['elbow_angle_list']), 2)
 shooting_result['avg_knee_angle'] = round(mean(shooting_pose['knee_angle_list']), 2)
@@ -103,3 +108,4 @@ fig.savefig(trajectory_path)
 fig.clear()
 trace_path = os.path.join(os.getcwd(), "basketball_trace.jpg")
 cv2.imwrite(trace_path, trace)
+
