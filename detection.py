@@ -12,17 +12,19 @@ from utils import openpose_init, tensorflow_init, detect_shot
 from statistics import mean
 tf.disable_v2_behavior()
 from google.colab.patches import cv2_imshow # for image display
+import pandas as pd
 
 datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 frame_batch = 3
 
-cap = cv2.VideoCapture("sample/Giannis_Antetokounmpo_shooting.avi")
+csv_name = 'test_shooting2.csv'#'test_shooting2'
+cap = cv2.VideoCapture("sample/test_shooting2.mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter("sample/output_new.avi", fourcc, fps / frame_batch, (int(width * 0.8), int(height * 0.8)))
+out = cv2.VideoWriter("sample/output_test_shooting2.avi", fourcc, fps / frame_batch, (int(width * 0.8), int(height * 0.8)))
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
 
 fig = plt.figure()
@@ -61,6 +63,10 @@ shot_result = {
     'release_displayFrames': 0,
     'judgement': ""
 }
+shooting_features = {
+  'elbow_angles': [],
+  'knee_angles': [],
+}
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -77,10 +83,10 @@ with tf.Session(graph=detection_graph, config=config) as sess:
             continue
         skip_count = 0
         detection, trace = detect_shot(img, trace, width, height, sess, image_tensor, boxes, scores, classes,
-                                        num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose)
+                                        num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose, shooting_features)
 
         detection = cv2.resize(detection, (0, 0), fx=0.8, fy=0.8)
-        cv2_imshow(detection)
+        # cv2_imshow(detection)
         out.write(detection)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
@@ -89,6 +95,16 @@ print('elbow_angle_list', shooting_pose['elbow_angle_list'])
 print('knee_angle_list', shooting_pose['knee_angle_list'])
 print('release_angle_list', during_shooting['release_angle_list'])
 
+print('elbow_angles', shooting_features['elbow_angles'])
+print('knee_angles', shooting_features['knee_angles'])
+
+# d = {'elbow_angle': shooting_pose['elbow_angle_list'], 'knee_angle': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
+d = {'elbow_angle': shooting_features['elbow_angles'], 'knee_angle': shooting_features['knee_angles'], 'elbow_angle2': shooting_pose['elbow_angle_list'], 'knee_angle2': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
+# df = pd.DataFrame(data=d)
+print(d)
+df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+print(df)
+df.to_csv(csv_name)
 
 # getting average shooting angle
 shooting_result['avg_elbow_angle'] = round(mean(shooting_pose['elbow_angle_list']), 2)
