@@ -124,7 +124,7 @@ def getAngleFromDatum(datum):
     kneeCoord = np.array([int(kneeX), int(kneeY)])
     return elbowAngle, kneeAngle, elbowCoord, kneeCoord
 
-def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, classes, num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose):
+def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, classes, num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose, shooting_features):
     if(shot_result['displayFrames'] > 0):
         shot_result['displayFrames'] -= 1
     if(shot_result['release_displayFrames'] > 0):
@@ -141,6 +141,8 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
         headX, headY, headConf = datum.poseKeypoints[0][0]
         handX, handY, handConf = datum.poseKeypoints[0][4]
         elbowAngle, kneeAngle, elbowCoord, kneeCoord = getAngleFromDatum(datum)
+        shooting_features["elbow_angles"].append(elbowAngle)
+        shooting_features["knee_angles"].append(kneeAngle)
     except:
         print("Something went wrong with OpenPose")
         headX = 0
