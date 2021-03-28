@@ -80,16 +80,19 @@ with tf.Session(graph=detection_graph, config=config) as sess:
         ret, img = cap.read()
         if ret == False:
             break
-        skip_count += 1
-        if(skip_count < frame_batch):
-            continue
-        skip_count = 0
+        # skip_count += 1
+        # if(skip_count < frame_batch):
+        #     continue
+        # skip_count = 0
+        key = cv2.waitKey(1)
         detection, trace = detect_shot(img, trace, width, height, sess, image_tensor, boxes, scores, classes,
                                         num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose, shooting_features)
 
         detection = cv2.resize(detection, (0, 0), fx=0.8, fy=0.8)
         # cv2_imshow(detection)
+        cv2.waitKey(int((1 / fps) * 1000)) 
         out.write(detection)
+        
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
