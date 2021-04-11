@@ -18,14 +18,14 @@ datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 frame_batch = 3
 
-name = "test_shooting2"
-csv_name = name + '.csv'#'test_shooting2'
+name = "Left_Side"
+csv_name = name + '_rightHand.csv'#'test_shooting2'
 cap = cv2.VideoCapture("sample/" + name + ".mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter("sample/output_" + name + ".avi", fourcc, fps, (int(width * 0.8), int(height * 0.8)))
+out = cv2.VideoWriter("sample/output_" + name + "_rightHand.avi", fourcc, fps, (int(width * 0.8), int(height * 0.8)))
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
 print(fps)
 
