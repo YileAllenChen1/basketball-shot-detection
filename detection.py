@@ -18,14 +18,14 @@ datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 frame_batch = 3
 
-name = "Left_Side"
-csv_name = name + '_rightHand.csv'#'test_shooting2'
+name = "curry"
+csv_name = name + '.csv'#'test_shooting2'
 cap = cv2.VideoCapture("sample/" + name + ".mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter("sample/output_" + name + "_rightHand.avi", fourcc, fps, (int(width * 0.8), int(height * 0.8)))
+out = cv2.VideoWriter("sample/output_" + name + ".avi", fourcc, fps, (int(width * 0.8), int(height * 0.8)))
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
 print(fps)
 
@@ -66,8 +66,14 @@ shot_result = {
     'judgement': ""
 }
 shooting_features = {
-  'elbow_angles': [],
-  'knee_angles': [],
+  # 'elbow_angles': [],
+  # 'knee_angles': [],
+
+  'right_elbow_angles': [],
+  'right_knee_angles': [],
+
+  'left_elbow_angles': [],
+  'left_knee_angles': [],
 }
 
 config = tf.ConfigProto()
@@ -100,11 +106,19 @@ print('elbow_angle_list', shooting_pose['elbow_angle_list'])
 print('knee_angle_list', shooting_pose['knee_angle_list'])
 print('release_angle_list', during_shooting['release_angle_list'])
 
-print('elbow_angles', shooting_features['elbow_angles'])
-print('knee_angles', shooting_features['knee_angles'])
+# print('elbow_angles', shooting_features['elbow_angles'])
+# print('knee_angles', shooting_features['knee_angles'])
 
 # d = {'elbow_angle': shooting_pose['elbow_angle_list'], 'knee_angle': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
-d = {'elbow_angle': shooting_features['elbow_angles'], 'knee_angle': shooting_features['knee_angles'], 'elbow_angle2': shooting_pose['elbow_angle_list'], 'knee_angle2': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
+# d = {'elbow_angle': shooting_features['elbow_angles'], 'knee_angle': shooting_features['knee_angles'], 'elbow_angle2': shooting_pose['elbow_angle_list'], 'knee_angle2': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
+d = { 'right_elbow_angle': shooting_features['right_elbow_angles'], 
+      'right_knee_angle': shooting_features['right_knee_angles'], 
+      'left_elbow_angle': shooting_features['left_elbow_angles'], 
+      'left_knee_angle': shooting_features['left_knee_angles'], 
+      'elbow_angle2': shooting_pose['elbow_angle_list'], 
+      'knee_angle2': shooting_pose['knee_angle_list'], 
+      'release_angle': during_shooting['release_angle_list']}
+
 # df = pd.DataFrame(data=d)
 print(d)
 df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
