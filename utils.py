@@ -110,10 +110,10 @@ def getAngleFromDatum(datum):
     shoulderX, shoulderY, _ = datum.poseKeypoints[0][2]
     elbowX, elbowY, _ = datum.poseKeypoints[0][3]
     wristX, wristY, _ = datum.poseKeypoints[0][4]
-    print("get here 3")
+
     kneeAngle = calculateAngle(np.array([hipX, hipY]), np.array([kneeX, kneeY]), np.array([ankleX, ankleY]))
     elbowAngle = calculateAngle(np.array([shoulderX, shoulderY]), np.array([elbowX, elbowY]), np.array([wristX, wristY]))
-    print("get here 4")
+
     elbowCoord = np.array([int(elbowX), int(elbowY)])
     kneeCoord = np.array([int(kneeX), int(kneeY)])
     
@@ -134,6 +134,15 @@ def getAngleFromDatum(datum):
     left_elbowX, left_elbowY, _ = datum.poseKeypoints[0][6]
     left_wristX, left_wristY, _ = datum.poseKeypoints[0][7]
 
+    # chest and pelvis center point, for calculating change of height
+    chestX, chestY, _ = datum.poseKeypoints[0][1]
+    pelvisX, pelvisY, _ = datum.poseKeypoints[0][8]
+    centerX, centerY = (chestX + pelvisX) / 2, (chestY + pelvisY) / 2
+
+    chestCoord = np.array([chestX, chestY])
+    pelvisCoord = np.array([pelvisX, pelvisY])
+    centerCoord = np.array([centerX, centerY])
+
     right_kneeAngle = calculateAngle(np.array([right_hipX, right_hipY]), np.array([right_kneeX, right_kneeY]), np.array([right_ankleX, right_ankleY]))
     right_elbowAngle = calculateAngle(np.array([right_shoulderX, right_shoulderY]), np.array([right_elbowX, right_elbowY]), np.array([right_wristX, right_wristY]))
 
@@ -145,10 +154,11 @@ def getAngleFromDatum(datum):
 
     left_elbowCoord = np.array([int(left_elbowX), int(left_elbowY)])
     left_kneeCoord = np.array([int(left_kneeX), int(left_kneeY)])
-    print("get here 2")
-    print(right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord)
-    print(left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord)
-    return elbowAngle, kneeAngle, elbowCoord, kneeCoord, right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord 
+
+    # print(right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord)
+    # print(left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord)
+    return elbowAngle, kneeAngle, elbowCoord, kneeCoord, right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, \
+            left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord, chestCoord, pelvisCoord, centerCoord 
 
 def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, classes, num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose, shooting_features):
     if(shot_result['displayFrames'] > 0):
@@ -163,20 +173,25 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
     datum.cvInputData = frame
     import pyopenpose as op
     opWrapper.emplaceAndPop(op.VectorDatum([datum]))
-    print("get here1")
     try:
         headX, headY, headConf = datum.poseKeypoints[0][0]
         handX, handY, handConf = datum.poseKeypoints[0][4]
-        print("get here")
-        elbowAngle, kneeAngle, elbowCoord, kneeCoord,right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord = getAngleFromDatum(datum)
+        elbowAngle, kneeAngle, elbowCoord, kneeCoord,right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, \
+        left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord, chestCoord, pelvisCoord, centerCoord = getAngleFromDatum(datum)
         # shooting_features["elbow_angles"].append(elbowAngle)
         # shooting_features["knee_angles"].append(kneeAngle)
-        print(right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord)
-        print(left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord)
+        # print(chestCoord, pelvisCoord, centerCoord)
         shooting_features["right_elbow_angles"].append(right_elbowAngle)
         shooting_features["right_knee_angles"].append(right_kneeAngle)
         shooting_features["left_elbow_angles"].append(left_elbowAngle)
         shooting_features["left_knee_angles"].append(left_kneeAngle)
+
+        shooting_features["chestX"].append(chestCoord[0])
+        shooting_features["pelvisX"].append(pelvisCoord[0])
+        shooting_features["centerX"].append(centerCoord[0])
+        shooting_features["chestY"].append(chestCoord[1])
+        shooting_features["pelvisY"].append(pelvisCoord[1])
+        shooting_features["centerY"].append(centerCoord[1])
     except:
         print("Something went wrong with OpenPose")
         headX = 0
@@ -200,6 +215,8 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
                 (elbowCoord[0] + 65, elbowCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 0), 3)
     cv2.putText(frame, 'Knee: ' + str(kneeAngle) + ' deg',
                 (kneeCoord[0] + 65, kneeCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 0), 3)
+    cv2.putText(frame, 'Center: ' + str(centerCoord[0]) + ', ' + str(centerCoord[1]) + ' deg',
+                (int(centerCoord[0]) - 65, int(centerCoord[1])), cv2.FONT_HERSHEY_COMPLEX, 0.8, (102, 255, 0), 3)
     if(shot_result['release_displayFrames']):
         cv2.putText(frame, 'Release: ' + str(during_shooting['release_angle_list'][-1]) + ' deg',
                     (during_shooting['release_point'][0] - 80, during_shooting['release_point'][1] + 80), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 255), 3)

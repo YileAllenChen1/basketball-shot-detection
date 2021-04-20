@@ -74,6 +74,13 @@ shooting_features = {
 
   'left_elbow_angles': [],
   'left_knee_angles': [],
+
+  'chestX': [],
+  'pelvisX': [],
+  'centerX': [],
+  'chestY': [],
+  'pelvisY': [],
+  'centerY': []
 }
 
 config = tf.ConfigProto()
@@ -115,6 +122,12 @@ d = { 'right_elbow_angle': shooting_features['right_elbow_angles'],
       'right_knee_angle': shooting_features['right_knee_angles'], 
       'left_elbow_angle': shooting_features['left_elbow_angles'], 
       'left_knee_angle': shooting_features['left_knee_angles'], 
+      'chestX': shooting_features['chestX'],
+      'pelvisX': shooting_features['pelvisX'],
+      'centerX': shooting_features['centerX'],
+      'chestY': shooting_features['chestY'],
+      'pelvisY': shooting_features['pelvisY'],
+      'centerY': shooting_features['centerY'],
     #   'elbow_angle2': shooting_pose['elbow_angle_list'], 
     #   'knee_angle2': shooting_pose['knee_angle_list'], 
     #   'release_angle': during_shooting['release_angle_list']
