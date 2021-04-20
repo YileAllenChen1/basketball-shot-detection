@@ -212,9 +212,9 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
     # displaying openpose, joint angle and release angle
     frame = datum.cvOutputData
     cv2.putText(frame, 'Elbow: ' + str(elbowAngle) + ' deg',
-                (elbowCoord[0] + 65, elbowCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 0), 3)
+                (elbowCoord[0] + 65, elbowCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 0.8, (102, 255, 0), 3)
     cv2.putText(frame, 'Knee: ' + str(kneeAngle) + ' deg',
-                (kneeCoord[0] + 65, kneeCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 1.3, (102, 255, 0), 3)
+                (kneeCoord[0] + 65, kneeCoord[1]), cv2.FONT_HERSHEY_COMPLEX, 0.8, (102, 255, 0), 3)
     cv2.putText(frame, 'Center: ' + str(centerCoord[0]) + ', ' + str(centerCoord[1]) + ' deg',
                 (int(centerCoord[0]) - 65, int(centerCoord[1])), cv2.FONT_HERSHEY_COMPLEX, 0.8, (102, 255, 0), 3)
     if(shot_result['release_displayFrames']):

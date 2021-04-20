@@ -109,9 +109,9 @@ with tf.Session(graph=detection_graph, config=config) as sess:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
-print('elbow_angle_list', shooting_pose['elbow_angle_list'])
-print('knee_angle_list', shooting_pose['knee_angle_list'])
-print('release_angle_list', during_shooting['release_angle_list'])
+# print('elbow_angle_list', shooting_pose['elbow_angle_list'])
+# print('knee_angle_list', shooting_pose['knee_angle_list'])
+# print('release_angle_list', during_shooting['release_angle_list'])
 
 # print('elbow_angles', shooting_features['elbow_angles'])
 # print('knee_angles', shooting_features['knee_angles'])
@@ -136,6 +136,7 @@ d = { 'right_elbow_angle': shooting_features['right_elbow_angles'],
 # df = pd.DataFrame(data=d)
 print(d)
 df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+df = df.interpolate()
 print(df)
 df.to_csv(csv_name)
 
