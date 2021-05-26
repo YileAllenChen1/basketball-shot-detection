@@ -19,7 +19,7 @@ detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorfl
 frame_batch = 3
 
 name = "curry"
-csv_name = name + '.csv'#'test_shooting2'
+csv_name = name + '.csv'
 cap = cv2.VideoCapture("sample/" + name + ".mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
@@ -65,10 +65,9 @@ shot_result = {
     'release_displayFrames': 0,
     'judgement': ""
 }
-shooting_features = {
-  # 'elbow_angles': [],
-  # 'knee_angles': [],
 
+# output these features to csv file
+shooting_features = {
   'right_elbow_angles': [],
   'right_knee_angles': [],
 
@@ -102,22 +101,13 @@ with tf.Session(graph=detection_graph, config=config) as sess:
                                         num_detections, previous, during_shooting, shot_result, fig, shooting_result, datum, opWrapper, shooting_pose, shooting_features)
 
         detection = cv2.resize(detection, (0, 0), fx=0.8, fy=0.8)
-        # cv2_imshow(detection)
+        
         cv2.waitKey(int((1 / fps) * 1000)) 
         out.write(detection)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
-# print('elbow_angle_list', shooting_pose['elbow_angle_list'])
-# print('knee_angle_list', shooting_pose['knee_angle_list'])
-# print('release_angle_list', during_shooting['release_angle_list'])
-
-# print('elbow_angles', shooting_features['elbow_angles'])
-# print('knee_angles', shooting_features['knee_angles'])
-
-# d = {'elbow_angle': shooting_pose['elbow_angle_list'], 'knee_angle': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
-# d = {'elbow_angle': shooting_features['elbow_angles'], 'knee_angle': shooting_features['knee_angles'], 'elbow_angle2': shooting_pose['elbow_angle_list'], 'knee_angle2': shooting_pose['knee_angle_list'], 'release_angle': during_shooting['release_angle_list']}
 d = { 'right_elbow_angle': shooting_features['right_elbow_angles'], 
       'right_knee_angle': shooting_features['right_knee_angles'], 
       'left_elbow_angle': shooting_features['left_elbow_angles'], 
@@ -127,14 +117,9 @@ d = { 'right_elbow_angle': shooting_features['right_elbow_angles'],
       'centerX': shooting_features['centerX'],
       'chestY': shooting_features['chestY'],
       'pelvisY': shooting_features['pelvisY'],
-      'centerY': shooting_features['centerY'],
-    #   'elbow_angle2': shooting_pose['elbow_angle_list'], 
-    #   'knee_angle2': shooting_pose['knee_angle_list'], 
-    #   'release_angle': during_shooting['release_angle_list']
+      'centerY': shooting_features['centerY']
     }
 
-# df = pd.DataFrame(data=d)
-print(d)
 df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
 df = df.interpolate()
 print(df)

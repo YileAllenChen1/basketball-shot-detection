@@ -155,8 +155,6 @@ def getAngleFromDatum(datum):
     left_elbowCoord = np.array([int(left_elbowX), int(left_elbowY)])
     left_kneeCoord = np.array([int(left_kneeX), int(left_kneeY)])
 
-    # print(right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord)
-    # print(left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord)
     return elbowAngle, kneeAngle, elbowCoord, kneeCoord, right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, \
             left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord, chestCoord, pelvisCoord, centerCoord 
 
@@ -178,9 +176,7 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
         handX, handY, handConf = datum.poseKeypoints[0][4]
         elbowAngle, kneeAngle, elbowCoord, kneeCoord,right_elbowAngle, right_kneeAngle, right_elbowCoord, right_kneeCoord, \
         left_elbowAngle, left_kneeAngle, left_elbowCoord, left_kneeCoord, chestCoord, pelvisCoord, centerCoord = getAngleFromDatum(datum)
-        # shooting_features["elbow_angles"].append(elbowAngle)
-        # shooting_features["knee_angles"].append(kneeAngle)
-        # print(chestCoord, pelvisCoord, centerCoord)
+
         shooting_features["right_elbow_angles"].append(right_elbowAngle)
         shooting_features["right_knee_angles"].append(right_kneeAngle)
         shooting_features["left_elbow_angles"].append(left_elbowAngle)
